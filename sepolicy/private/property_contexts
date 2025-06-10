@@ -12,3 +12,7 @@ MACE_CPP_MIN_VLOG_LEVEL                     u:object_r:vendor_camera_prop:s0
 
 # Global
 ro.product.marketname          u:object_r:build_prop:s0
+
+# MIUI
+ro.miui.region                      u:object_r:exported_system_prop:s0
+ro.miui.build.region                u:object_r:exported_system_prop:s0
