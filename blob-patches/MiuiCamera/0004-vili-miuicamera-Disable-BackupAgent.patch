@@ -1,0 +1,28 @@
+From 1f9dcd8c1b20f4c21f3df8cf9d3fa1806d7a76de Mon Sep 17 00:00:00 2001
+From: Alexander Winkowski <dereference23@outlook.com>
+Date: Thu, 18 Apr 2024 11:47:56 +0200
+Subject: [PATCH 4/6] vili-miuicamera: Disable `BackupAgent`
+
+* Doesn't work on AOSP
+
+Change-Id: I0be35e30009b6a3f1d3f0f2930a971c25a9f4182
+---
+ AndroidManifest.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index 698de21d..19627da6 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -73,7 +73,7 @@
+         <package android:name="com.xiaomi.scanner"/>
+         <package android:name="com.android.htmlviewer"/>
+     </queries>
+-    <application android:allowBackup="true" android:appComponentFactory="androidx.core.app.CoreComponentFactory" android:backupAgent="com.android.camera.backup.CameraBackupAgent" android:extractNativeLibs="false" android:hardwareAccelerated="true" android:icon="@mipmap/ic_launcher_camera_cv" android:label="@string/camera_label" android:largeHeap="true" android:name="com.android.camera.CameraAppImpl" android:networkSecurityConfig="@xml/network_security_config" android:resizeableActivity="false" android:supportsRtl="true" android:theme="@style/ThemeCamera">
++    <application android:allowBackup="false" android:appComponentFactory="androidx.core.app.CoreComponentFactory" android:extractNativeLibs="false" android:hardwareAccelerated="true" android:icon="@mipmap/ic_launcher_camera_cv" android:label="@string/camera_label" android:largeHeap="true" android:name="com.android.camera.CameraAppImpl" android:networkSecurityConfig="@xml/network_security_config" android:resizeableActivity="false" android:supportsRtl="true" android:theme="@style/ThemeCamera">
+         <meta-data android:name="required_permissions" android:value="@string/required_permissions_supportModifiable"/>
+         <meta-data android:name="miui.supportRequiredModifiable" android:value="true"/>
+         <meta-data android:name="com.miui.bugreport.LOG_DIR" android:resource="@xml/log_paths"/>
+-- 
+2.53.0
+

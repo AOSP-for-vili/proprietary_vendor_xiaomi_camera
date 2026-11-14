@@ -1,0 +1,163 @@
+From d679a02490d4f15c0b9879f8c421179af0e16ac6 Mon Sep 17 00:00:00 2001
+From: 0mar99 <omarag9099@gmail.com>
+Date: Sat, 14 Nov 2026 19:13:41 +0000
+Subject: [PATCH] vili-miuicamera: ParallelProcessProvider: Enforce target PPP
+ version 3
+
+---
+ .../provider/ParallelProcessProvider.smali    | 137 +-----------------
+ 1 file changed, 3 insertions(+), 134 deletions(-)
+
+diff --git a/smali_classes2/com/xiaomi/camera/parallelservice/provider/ParallelProcessProvider.smali b/smali_classes2/com/xiaomi/camera/parallelservice/provider/ParallelProcessProvider.smali
+index 0720ba69..e7485c5d 100644
+--- a/smali_classes2/com/xiaomi/camera/parallelservice/provider/ParallelProcessProvider.smali
++++ b/smali_classes2/com/xiaomi/camera/parallelservice/provider/ParallelProcessProvider.smali
+@@ -259,142 +259,11 @@
+ .end method
+ 
+ .method public static getTargetVersion()I
+-    .locals 8
+-
+-    .line 1
+-    invoke-static {}, Lcom/android/camera/data/DataRepository;->dataItemGlobal()Lcom/android/camera/data/data/global/DataItemGlobal;
+-
+-    move-result-object v0
+-
+-    const-string v1, "target_ppp_version"
+-
+-    const/4 v2, 0x0
+-
+-    .line 2
+-    invoke-virtual {v0, v1, v2}, Lcom/android/camera/data/data/DataItemBase;->getInt(Ljava/lang/String;I)I
+-
+-    move-result v2
+-
+-    .line 3
+-    new-instance v3, Ljava/lang/StringBuilder;
+-
+-    invoke-direct {v3}, Ljava/lang/StringBuilder;-><init>()V
+-
+-    const-string v4, "targetVersion(CACHE): "
+-
+-    invoke-virtual {v3, v4}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+-
+-    invoke-virtual {v3, v2}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+-
+-    invoke-virtual {v3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+-
+-    move-result-object v3
+-
+-    const-string v4, "ParallelProcessProvider"
+-
+-    invoke-static {v4, v3}, Lcom/android/camera/log/Log;->w(Ljava/lang/String;Ljava/lang/String;)I
+-
+-    const/4 v3, 0x3
+-
+-    const/4 v5, 0x2
+-
+-    if-lt v2, v5, :cond_0
+-
+-    if-gt v2, v3, :cond_0
+-
+-    return v2
+-
+-    .line 4
+-    :cond_0
+-    invoke-static {}, Lcom/xiaomi/camera/parallelservice/provider/ParallelProcessProvider;->getTargetVersionFromMetadata()I
+-
+-    move-result v2
+-
+-    .line 5
+-    new-instance v6, Ljava/lang/StringBuilder;
+-
+-    invoke-direct {v6}, Ljava/lang/StringBuilder;-><init>()V
+-
+-    const-string v7, "targetVersion(METADATA): "
+-
+-    invoke-virtual {v6, v7}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+-
+-    invoke-virtual {v6, v2}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+-
+-    invoke-virtual {v6}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+-
+-    move-result-object v6
+-
+-    invoke-static {v4, v6}, Lcom/android/camera/log/Log;->w(Ljava/lang/String;Ljava/lang/String;)I
++    .registers 1
+ 
+-    if-lt v2, v5, :cond_1
++    const/4 v0, 0x3
+ 
+-    if-gt v2, v3, :cond_1
+-
+-    .line 6
+-    invoke-virtual {v0, v1, v2}, Lcom/android/camera/data/data/DataItemBase;->putInt(Ljava/lang/String;I)Lcom/android/camera/data/provider/DataProvider$ProviderEditor;
+-
+-    move-result-object v0
+-
+-    invoke-interface {v0}, Lcom/android/camera/data/provider/DataProvider$ProviderEditor;->apply()V
+-
+-    return v2
+-
+-    .line 7
+-    :cond_1
+-    invoke-static {}, Lcom/xiaomi/camera/parallelservice/provider/ParallelProcessProvider;->getTargetVersionFromProvider()I
+-
+-    move-result v2
+-
+-    .line 8
+-    new-instance v6, Ljava/lang/StringBuilder;
+-
+-    invoke-direct {v6}, Ljava/lang/StringBuilder;-><init>()V
+-
+-    const-string v7, "targetVersion(PROVIDER): "
+-
+-    invoke-virtual {v6, v7}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+-
+-    invoke-virtual {v6, v2}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+-
+-    invoke-virtual {v6}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+-
+-    move-result-object v6
+-
+-    invoke-static {v4, v6}, Lcom/android/camera/log/Log;->w(Ljava/lang/String;Ljava/lang/String;)I
+-
+-    if-lt v2, v5, :cond_2
+-
+-    if-gt v2, v3, :cond_2
+-
+-    .line 9
+-    invoke-virtual {v0, v1, v2}, Lcom/android/camera/data/data/DataItemBase;->putInt(Ljava/lang/String;I)Lcom/android/camera/data/provider/DataProvider$ProviderEditor;
+-
+-    move-result-object v0
+-
+-    invoke-interface {v0}, Lcom/android/camera/data/provider/DataProvider$ProviderEditor;->apply()V
+-
+-    return v2
+-
+-    .line 10
+-    :cond_2
+-    new-instance v0, Ljava/lang/StringBuilder;
+-
+-    invoke-direct {v0}, Ljava/lang/StringBuilder;-><init>()V
+-
+-    const-string v1, "targetVersion(DEFAULT): "
+-
+-    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+-
+-    invoke-virtual {v0, v5}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+-
+-    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+-
+-    move-result-object v0
+-
+-    invoke-static {v4, v0}, Lcom/android/camera/log/Log;->w(Ljava/lang/String;Ljava/lang/String;)I
+-
+-    return v5
++    return v0
+ .end method
+ 
+ .method public static getTargetVersionFromMetadata()I
+-- 
+2.53.0
+

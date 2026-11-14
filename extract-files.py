@@ -70,6 +70,7 @@ blob_fixups: blob_fixups_user_type = {
         .replace_needed('android.hardware.graphics.common-V4-ndk.so', 'android.hardware.graphics.common-V7-ndk.so')
         .add_needed('libbinder_shim.so'),
     'system/priv-app/MiuiCamera/MiuiCamera.apk': blob_fixup()
+        .apktool_patch('blob-patches/MiuiCamera')
         .call(split_apk),
 }
 
