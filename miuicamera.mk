@@ -30,4 +30,7 @@ PRODUCT_SYSTEM_PROPERTIES += \
 BOARD_VENDOR_SEPOLICY_DIRS += \
     vendor/xiaomi/camera/sepolicy/vendor
 
+SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += \
+    vendor/xiaomi/camera/sepolicy/private
+
 $(call inherit-product, vendor/xiaomi/camera/camera-vendor.mk)
