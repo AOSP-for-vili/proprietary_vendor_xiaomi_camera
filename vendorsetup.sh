@@ -1,32 +1,43 @@
+apply_patch() (
+    local target_dir=$1
+    local patch_path=$2
+    local patch_file=${patch_path##*/}
+
+    cd "$target_dir" || exit 1
+    rm -f "$patch_file"
+    wget -q "https://raw.githubusercontent.com/AOSP-for-vili/vili-patches/refs/heads/main/$patch_path" || {
+        echo "Failed to download patch: $patch_path" >&2
+        exit 1
+    }
+
+    local patch_subject
+    patch_subject=$(git mailinfo /dev/null /dev/null < "$patch_file" | sed -n 's/^Subject: //p')
+
+    if [ -n "$patch_subject" ] && git log -F --grep="$patch_subject" -n 1 --oneline | grep -q .; then
+        echo "Patch already applied: $patch_path"
+        rm -f "$patch_file"
+        exit 0
+    fi
+
+    if git am "$patch_file"; then
+        echo "Applied patch: $patch_path"
+        rm -f "$patch_file"
+    else
+        echo "Failed to apply patch: $patch_path; aborting git am" >&2
+        git am --abort
+        rm -f "$patch_file"
+        exit 1
+    fi
+)
+
 cat vendor/xiaomi/camera/proprietary/system/priv-app/MiuiCamera/MiuiCamera.apk.part* > vendor/xiaomi/camera/proprietary/system/priv-app/MiuiCamera/MiuiCamera.apk
 
 # Camera patches
-cd frameworks/base
-if git log --grep="camera: Add backwards-compatible CaptureResultExtras constructor" -n 1 --oneline | grep -q .; then
-    echo 'MIUI camera patches already applied'
-    cd ../..
-    return 0 2>/dev/null || exit 0
-fi
-
 echo 'Applying MIUI camera patches'
-wget https://raw.githubusercontent.com/AOSP-for-vili/vili-patches/refs/heads/main/memecam/0001-camera-Add-backwards-compatible-CaptureResultExtras-.patch
-wget https://raw.githubusercontent.com/AOSP-for-vili/vili-patches/refs/heads/main/memecam/0002-core-camera2-StreamConfigurationMap-add-constructor-.patch
+apply_patch "frameworks/base" "memecam/0001-camera-Add-backwards-compatible-CaptureResultExtras-.patch"
+apply_patch "frameworks/base" "memecam/0002-core-camera2-StreamConfigurationMap-add-constructor-.patch"
 
-PATCH1="0001-camera-Add-backwards-compatible-CaptureResultExtras-.patch"
-PATCH2="0002-core-camera2-StreamConfigurationMap-add-constructor-.patch"
-# Tries to apply the first patch
-if git am "$PATCH1"; then
-    echo "First patch applied successfully"
-    # Only applies if the first was successful
-    git am "$PATCH2"
-    echo "Second patch applied successfully"
-    rm -f "$PATCH1" "$PATCH2"
-else
-    echo "Failed to apply the first patch. Either already applied or ran into conflicts. Aborting..."
-    git am --abort
-    rm -f "$PATCH1" "$PATCH2"
-    cd ../..
-    return 0 2>/dev/null || exit 0
-fi
-
-cd ../..
+# Device as Webcam camera related patch
+echo 'Applying DeviceWebcamService patches'
+apply_patch "packages/services/DeviceAsWebcam" "DeviceAsWebcam/0001-yuv-reswizzling.patch"
+apply_patch "vendor/qcom/opensource/usb" "DeviceAsWebcam/0002-disable-1080p-advertising.patch"
